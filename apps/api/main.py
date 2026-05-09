@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from apps.api.routes import resume
+from apps.api.app.routes import resume
 
 app = FastAPI()
 

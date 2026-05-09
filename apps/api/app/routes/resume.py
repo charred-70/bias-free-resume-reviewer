@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from apps.api.models.request_models import ResumeInput
-from apps.api.services.resume_service import process_resume
+from apps.api.app.models.request_models import ResumeInput
+from apps.api.app.services.resume_service import process_resume
 
 router = APIRouter()
 
