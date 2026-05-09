@@ -12,7 +12,3 @@ def analyze_resume(data: ResumeInput):
         "cleaned_text": result["cleaned_text"],
         "length": result["length"]
     }
-
-@router.get("/resume")
-def get_resume():
-    return {"message": "resume route working"}
