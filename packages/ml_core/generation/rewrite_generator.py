@@ -19,4 +19,6 @@ def rewrite_with_transformer(text: str):
     if output.startswith(prompt):
         output = output[len(prompt):].strip()
 
+    if "d)" in output:
+        output = output.split("d)")[-1].strip()
     return output if output else text

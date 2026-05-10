@@ -39,6 +39,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [inputType, setInputType] = useState<'text' | 'pdf'>('text');
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -63,6 +64,7 @@ export default function App() {
 
       if (uploadedFile) {
         // PDF path — hits /parse
+        setInputType('pdf');
         const formData = new FormData();
         formData.append('file', uploadedFile);
 
@@ -79,6 +81,7 @@ export default function App() {
         data = await res.json();
       } else {
         // Text path — hits /analyze
+        setInputType('text');
         const res = await fetch('http://localhost:8000/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -154,8 +157,7 @@ export default function App() {
                 setManuallyTyped(e.target.value.length > 0);
               }}
               disabled={submitted || uploadedFile !== null}
-              className="w-full h-96 resize-none border-2 border-gray-200 rounded-lg p-4 text-lg focus:outline-none focus:border-blue-400 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-900 disabled:border-gray-300"
-            />
+              className="w-full h-96 resize-none border-2 border-gray-200 rounded-lg p-4 text-lg text-gray-900 focus:outline-none focus:border-blue-400 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-900 disabled:border-gray-300" />
             {!textContent && !uploadedFile && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-400 text-2xl">
                 type or upload resume
@@ -349,8 +351,12 @@ export default function App() {
                       .filter(s => s.original !== 'full_text') // skip the junk ML entry
                       .map((s, i) => (
                         <li key={i} className="flex items-center gap-2">
-                          <span className="line-through text-red-400">{s.original}</span>
-                          <span className="text-gray-400">→</span>
+                          {inputType === 'text' && (
+                            <>
+                              <span className="line-through text-red-400">{s.original}</span>
+                              <span className="text-gray-400">→</span>
+                            </>
+                          )}
                           <span className="text-green-600">{s.replacement}</span>
                         </li>
                       ))}
