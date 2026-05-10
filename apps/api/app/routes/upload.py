@@ -1,7 +1,6 @@
 from fastapi import APIRouter, UploadFile, File
-import os
 
-from apps.api.services.resume_service import process_pdf
+from apps.api.app.services.resume_service import process_pdf
 
 router = APIRouter()
 

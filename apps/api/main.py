@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from apps.api.app.routes import resume
+from apps.api.app.routes import upload
+
 
 app = FastAPI()
 
 app.include_router(resume.router)
+app.include_router(upload.router)
 
 @app.get("/")
 def root():
