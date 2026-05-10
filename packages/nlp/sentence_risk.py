@@ -1,32 +1,19 @@
-def split_sentences(text: str):
-    return text.split(".")
+from packages.nlp.sentence_splitter import split_sentences
 
-def score_segments(sentences, ml_score, rule_score):
+def score_segments(text: str, ml_model):
+
+    sentences = split_sentences(text)
 
     results = []
 
     for s in sentences:
-        s_clean = s.strip()
 
-        if not s_clean:
-            continue
-
-        local_risk = 0.0
-
-        if "aggressive" in s_clean.lower():
-            local_risk += 0.3
-
-        if "google" in s_clean.lower():
-            local_risk += 0.3
-
-        if "years" in s_clean.lower():
-            local_risk += 0.2
-
-        combined = (local_risk * 0.6) + (ml_score * 0.3) + (rule_score * 0.1)
+        # placeholder ML scoring per sentence
+        score = ml_model.predict(s) if ml_model else 0.2
 
         results.append({
-            "segment": s_clean,
-            "risk": round(min(combined, 1.0), 2)
+            "segment": s,
+            "risk": round(score, 2)
         })
 
     return results

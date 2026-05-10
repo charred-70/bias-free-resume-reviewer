@@ -1,6 +1,7 @@
 from packages.bias_detector.scorer import score_bias
 from apps.api.app.services.ml_bias_service import predict_bias
 from packages.bias_detector.explainer import explain
+from packages.nlp.sentence_splitter import split_sentences
 from packages.nlp.sentence_risk import score_segments
 from packages.bias_detector.rewrite_engine import rewrite_resume
 
@@ -31,8 +32,10 @@ def analyze_bias(cleaned_text: str):
 
     explanations = explain(cleaned_text, ml_score, rule_score)
 
-    sentences = cleaned_text.split(".")
-    sentence_map = score_segments(sentences, ml_score, rule_score)
+    sentences = split_sentences(cleaned_text)
+
+    sentence_map = score_segments(cleaned_text, ml_model=None)
+
 
     if final_score < 0.3:
         risk = "low"
