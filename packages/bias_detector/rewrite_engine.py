@@ -1,5 +1,5 @@
 from .rewrite_config import REWRITE_RULES
-from .rewrite_schema import RewriteResult
+from packages.ml_core.generation.rewrite_generator import rewrite_with_transformer
 
 def rewrite_resume(text: str):
 
@@ -18,7 +18,22 @@ def rewrite_resume(text: str):
                 "replacement": new
             })
 
-    return {
-        "rewritten_text": rewritten,
-        "suggestions": suggestions
-    }
+    try:
+        ml_rewrite = rewrite_with_transformer(text)
+
+        return {
+            "rewritten_text": ml_rewrite,
+            "suggestions": suggestions + [{
+                "original": "full_text",
+                "replacement": "ml_rewrite",
+                "reason": "transformer rewrite"
+            }],
+            "rewrite_strength": 0.9
+        }
+
+    except Exception:
+        return {
+            "rewritten_text": rewritten,
+            "suggestions": suggestions,
+            "rewrite_strength": 0.5
+        }

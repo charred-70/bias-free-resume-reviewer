@@ -21,3 +21,19 @@ AGE_INDICATORS = [
     "veteran",
     "retired"
 ]
+
+RACE_INDICATORS = {
+    "diversity hire": "sensitive demographic reference",
+    "minority": "sensitive demographic reference",
+    "african american": "racial identifier",
+    "latino": "racial identifier",
+    "asian": "racial identifier"
+}
+
+DISABILITY_INDICATORS = {
+    "wheelchair": "accessibility reference",
+    "hearing impaired": "disability reference",
+    "visually impaired": "disability reference",
+    "autism": "neurodiversity reference",
+    "disabled": "general disability reference"
+}
