@@ -15,9 +15,19 @@ def analyze_bias(cleaned_text: str):
     ml_result = predict_bias(cleaned_text)
 
     rule_score = rule_result["bias_score"]
+    harm_score = rule_result["harm_score"]
+    sensitivity_score = rule_result["sensitivity_score"]
     ml_score = ml_result["bias_probability"]
 
-    final_score = (rule_score * 0.4) + (ml_score * 0.6)
+    model_component = ml_score * 0.6
+    harm_component = harm_score * 0.4
+
+    sensitivity_penalty = 0.0
+    if sensitivity_score > 0.7:
+        sensitivity_penalty = 0.05
+
+    final_score = model_component + harm_component + sensitivity_penalty
+    final_score = min(final_score, 1.0)
 
     explanations = explain(cleaned_text, ml_score, rule_score)
 
@@ -41,6 +51,11 @@ def analyze_bias(cleaned_text: str):
         "ml_score": round(ml_score, 2),
         "risk_level": risk,
         "flags": rule_result["flags"],
+        "fairness_analysis": {
+            "harm_score": harm_score,
+            "sensitivity_score": sensitivity_score,
+            "ml_score": ml_score
+        },
         "model_type": "hybrid",
         "explanation": {
             "explanation_strength": round(explanation_strength, 2),

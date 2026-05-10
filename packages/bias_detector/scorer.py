@@ -34,24 +34,29 @@ def score_bias(text: str):
     if disability_hits:
         flags.add("disability_reference")
 
-    gender_score = (gender_hits / len(GENDERED_LANGUAGE)) * 0.4
-    prestige_score = (prestige_hits / len(PRESTIGE_TERMS)) * 0.4
-    age_score = (age_hits / len(AGE_INDICATORS)) * 0.5
-
-    race_score = (race_hits / len(RACE_INDICATORS)) * 0.2
-    disability_score = (disability_hits / len(DISABILITY_INDICATORS)) * 0.2
-
-    score = (
-        gender_score +
-        prestige_score +
-        age_score +
-        race_score +
-        disability_score
+    harm_score = (
+        (gender_hits * 0.3) +
+        (prestige_hits * 0.3) +
+        (age_hits * 0.4)
     )
+
+    sensitivity_score = (
+        (race_hits * 0.2) +
+        (disability_hits * 0.2)
+    )
+
+    harm_score = min(harm_score / 3, 1.0)
+    sensitivity_score = min(sensitivity_score / 2, 1.0)
+
+    total_score = min(harm_score + sensitivity_score, 1.0)
+
     if len(flags) >= 3:
-        score *= 1.1
+        total_score *= 1.1
+        total_score = min(total_score, 1.0)
 
     return {
-        "bias_score": round(min(score, 1.0), 2),
+        "bias_score": round(total_score, 2),
+        "harm_score": round(harm_score, 2),
+        "sensitivity_score": round(sensitivity_score, 2),
         "flags": list(flags)
     }
