@@ -2,6 +2,7 @@ from packages.bias_detector.scorer import score_bias
 from apps.api.app.services.ml_bias_service import predict_bias
 from packages.bias_detector.explainer import explain
 from packages.nlp.sentence_risk import score_segments
+from packages.bias_detector.rewrite_engine import rewrite_resume
 
 # optional global model loader later
 ml_model = None
@@ -32,6 +33,8 @@ def analyze_bias(cleaned_text: str):
 
     explanation_strength = (rule_score * 0.5) + (ml_score * 0.5)
 
+    rewrites = rewrite_resume(cleaned_text)
+
     return {
         "bias_score": round(final_score, 2),
         "rule_score": round(rule_score, 2),
@@ -43,5 +46,6 @@ def analyze_bias(cleaned_text: str):
             "explanation_strength": round(explanation_strength, 2),
             "explanation": explanations,
             "sentence_risk_map": sentence_map
-        }
+        },
+        "rewrites": rewrites
     }
